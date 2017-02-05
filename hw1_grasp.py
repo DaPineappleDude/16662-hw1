@@ -78,8 +78,6 @@ class RoboHandler:
     self.target_kinbody.SetTransform(T)
     self.env.AddKinBody(self.target_kinbody)
 
-    # create a grasping module
-    self.gmodel = openravepy.databases.grasping.GraspingModel(self.robot, self.target_kinbody)
     
     # if you want to set options, e.g. friction
     options = openravepy.options
@@ -107,6 +105,10 @@ class RoboHandler:
   def order_grasps_noisy(self):
     self.grasps_ordered_noisy = self.grasps_ordered.copy() #you should change the order of self.grasps_ordered_noisy
     #TODO set the score with your evaluation function (over random samples) and sort
+
+
+
+
 
 
   # function to evaluate grasps
@@ -141,6 +143,7 @@ class RoboHandler:
         dimensionality = np.rank(G)
         #score = min_sing + isotropy_index + dimensionality
         score = min_sing + dimensionality
+       # print score
         return score #change this
 
       except openravepy.planning_error,e:
@@ -193,7 +196,7 @@ class RoboHandler:
 
 
   #displays the grasp
-  def show_grasp(self, grasp, delay=1.5):
+  def show_grasp(self, grasp, delay=7):
     with openravepy.RobotStateSaver(self.gmodel.robot):
       with self.gmodel.GripperVisibility(self.gmodel.manip):
         time.sleep(0.1) # let viewer update?
@@ -210,9 +213,12 @@ class RoboHandler:
             time.sleep(delay)
         except openravepy.planning_error,e:
           print 'bad grasp!',e
-
+   # raw_input("hit enter for next grasp")
 if __name__ == '__main__':
   robo = RoboHandler()
   #time.sleep(10000) #to keep the openrave window open
-
-  
+  import IPython
+  IPython.embed()
+ 
+  while True:
+    time.sleep(1) 
